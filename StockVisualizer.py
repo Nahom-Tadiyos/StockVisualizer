@@ -1,8 +1,15 @@
+from customtkinter import *
 import yfinance as yf
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
+import customtkinter as ct
 
+app = ct.CTk()
+app.title("Stocks Visualizer")
+app.geometry("900x600")
+
+app.mainloop()
 def fetch_stock_data(symbol, start_date, end_date):
     stock_data = yf.download(symbol, start=start_date, end=end_date)
     return stock_data
@@ -46,5 +53,3 @@ def main():
         plot_stock_data_with_moving_averages(stock_data, stock_symbol)
         plot_candlestick_chart(stock_data, stock_symbol)
 
-if __name__ == "__main__":
-    main()
