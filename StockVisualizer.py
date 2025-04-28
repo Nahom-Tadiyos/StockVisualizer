@@ -40,6 +40,8 @@ EndTimeEntryInstructions.pack(side="left", padx=5)
 EndTimeEntry = ct.CTkEntry(end_frame, width=100)
 EndTimeEntry.pack(side="left", padx=5)
 
+visualizeBtn = ct.CTkButton(app, width=100, text="Visualize")
+visualizeBtn.pack()
 
 app.mainloop()
 def fetch_stock_data(symbol, start_date, end_date):
