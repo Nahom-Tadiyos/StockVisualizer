@@ -1,6 +1,7 @@
 from customtkinter import *
 import yfinance as yf
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import plotly.graph_objects as go
 import customtkinter as ct
 import tkcalendar as tc
@@ -10,19 +11,25 @@ def fetch_stock_data(symbol, start_date, end_date):
     stock_data = yf.download(symbol, start=start_date, end=end_date)
     return stock_data
 
-def plot_stock_data_with_moving_averages(stock_data, symbol):
+def plot_stock_data_with_moving_averages(stock_data, symbol, parent_widget):
     stock_data['50_MA'] = stock_data['Close'].rolling(window=50).mean()
     stock_data['200_MA'] = stock_data['Close'].rolling(window=200).mean()
-    plt.figure(figsize=(10, 6))
-    plt.plot(stock_data['Close'], label=f'{symbol} Close Price', color='blue')
-    plt.plot(stock_data['50_MA'], label='50-Day Moving Average', color='orange')
-    plt.plot(stock_data['200_MA'], label='200-Day Moving Average', color='red')
-    plt.title(f'{symbol} Stock Price with Moving Averages')
-    plt.xlabel('Date')
-    plt.ylabel('Price (USD)')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+
+    fig, ax = plt.subplots(figsize=(10, 6))  # Create a Figure and Axes object
+    ax.plot(stock_data['Close'], label=f'{symbol} Close Price', color='blue')
+    ax.plot(stock_data['50_MA'], label='50-Day Moving Average', color='orange')
+    ax.plot(stock_data['200_MA'], label='200-Day Moving Average', color='red')
+    ax.set_title(f'{symbol} Stock Price with Moving Averages')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Price (USD)')
+    ax.legend()
+    ax.grid(True)
+
+    # Create a Tkinter canvas from the Figure
+    canvas = FigureCanvasTkAgg(fig, master=parent_widget)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack(fill=BOTH, expand=True)  # Pack the canvas into the parent widget
+    canvas.draw()
 
 def plot_candlestick_chart(stock_data, symbol):
     fig = go.Figure(data=[go.Candlestick(x=stock_data.index,
@@ -33,14 +40,13 @@ def plot_candlestick_chart(stock_data, symbol):
     fig.update_layout(title=f'{symbol} Candlestick Chart',
                       xaxis_title='Date',
                       yaxis_title='Price (USD)')
-    fig.show()
+    fig.show() # Plotly charts are inherently interactive in a browser
 
 def main():
-    stock_symbol = StockSymbolEntry.get().strip().upper()  # Get symbol, remove whitespace, and uppercase
+    stock_symbol = StockSymbolEntry.get().strip().upper()
     start_date = StartTimeCalendar.get_date()
     end_date = EndTimeCalendar.get_date()
 
-    # Convert tkcalendar dates to 'YYYY-MM-DD' string format
     start_date_str = start_date.strftime('%Y-%m-%d')
     end_date_str = end_date.strftime('%Y-%m-%d')
 
@@ -49,8 +55,11 @@ def main():
     if stock_data is None or stock_data.empty:
         print(f"No data found for symbol: {stock_symbol}, Start Date: {start_date_str}, End Date: {end_date_str}")
     else:
-        plot_stock_data_with_moving_averages(stock_data, stock_symbol)
-        plot_candlestick_chart(stock_data, stock_symbol)
+        # Create a frame to hold the Matplotlib graph
+        matplotlib_frame = ct.CTkFrame(app)
+        matplotlib_frame.pack(pady=10, padx=10, fill=BOTH, expand=True)
+        plot_stock_data_with_moving_averages(stock_data, stock_symbol, matplotlib_frame)
+        plot_candlestick_chart(stock_data, stock_symbol) # Plotly will still open in a browser
 
 app = ct.CTk()
 app.title("Stocks Visualizer")
