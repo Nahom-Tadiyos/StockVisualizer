@@ -5,45 +5,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 import customtkinter as ct
 
-app = ct.CTk()
-app.title("Stocks Visualizer")
-app.geometry("900x600")
-ct.set_appearance_mode("dark")
-
-title = ct.CTkLabel(app, text="Stocks Visualizer")
-title.pack(pady=10)
-
-stock_frame = ct.CTkFrame(app)
-stock_frame.pack(pady=5)
-
-StockSymbolInstructions = ct.CTkLabel(stock_frame, text="Enter stock symbol (e.g., AAPL):")
-StockSymbolInstructions.pack(side="left", padx=5)
-
-StockSymbolEntry = ct.CTkEntry(stock_frame, width=100)
-StockSymbolEntry.pack(side="left", padx=5)
-
-start_frame = ct.CTkFrame(app)
-start_frame.pack(pady=5)
-
-StartTimeEntryInstructions = ct.CTkLabel(start_frame, text="Enter start date (YYYY-MM-DD):")
-StartTimeEntryInstructions.pack(side="left", padx=5)
-
-StartTimeEntry = ct.CTkEntry(start_frame, width=100)
-StartTimeEntry.pack(side="left", padx=5)
-
-end_frame = ct.CTkFrame(app)
-end_frame.pack(pady=5)
-
-EndTimeEntryInstructions = ct.CTkLabel(end_frame, text="Enter end date (YYYY-MM-DD):")
-EndTimeEntryInstructions.pack(side="left", padx=5)
-
-EndTimeEntry = ct.CTkEntry(end_frame, width=100)
-EndTimeEntry.pack(side="left", padx=5)
-
-visualizeBtn = ct.CTkButton(app, width=100, text="Visualize")
-visualizeBtn.pack()
-
-app.mainloop()
 def fetch_stock_data(symbol, start_date, end_date):
     stock_data = yf.download(symbol, start=start_date, end=end_date)
     return stock_data
@@ -87,3 +48,43 @@ def main():
         plot_stock_data_with_moving_averages(stock_data, stock_symbol)
         plot_candlestick_chart(stock_data, stock_symbol)
 
+
+app = ct.CTk()
+app.title("Stocks Visualizer")
+app.geometry("900x600")
+ct.set_appearance_mode("dark")
+
+title = ct.CTkLabel(app, text="Stocks Visualizer")
+title.pack(pady=10)
+
+stock_frame = ct.CTkFrame(app)
+stock_frame.pack(pady=5)
+
+StockSymbolInstructions = ct.CTkLabel(stock_frame, text="Enter stock symbol (e.g., AAPL):")
+StockSymbolInstructions.pack(side="left", padx=5)
+
+StockSymbolEntry = ct.CTkEntry(stock_frame, width=100)
+StockSymbolEntry.pack(side="left", padx=5)
+
+start_frame = ct.CTkFrame(app)
+start_frame.pack(pady=5)
+
+StartTimeEntryInstructions = ct.CTkLabel(start_frame, text="Enter start date (YYYY-MM-DD):")
+StartTimeEntryInstructions.pack(side="left", padx=5)
+
+StartTimeEntry = ct.CTkEntry(start_frame, width=100)
+StartTimeEntry.pack(side="left", padx=5)
+
+end_frame = ct.CTkFrame(app)
+end_frame.pack(pady=5)
+
+EndTimeEntryInstructions = ct.CTkLabel(end_frame, text="Enter end date (YYYY-MM-DD):")
+EndTimeEntryInstructions.pack(side="left", padx=5)
+
+EndTimeEntry = ct.CTkEntry(end_frame, width=100)
+EndTimeEntry.pack(side="left", padx=5)
+
+visualizeBtn = ct.CTkButton(app, width=100, text="Visualize", command=main)
+visualizeBtn.pack()
+
+app.mainloop()
