@@ -36,9 +36,9 @@ def plot_candlestick_chart(stock_data, symbol):
     fig.show()
 
 def main():
-    stock_symbol = input("Enter stock symbol (e.g., AAPL): ").upper()
-    start_date = input("Enter start date (YYYY-MM-DD): ")
-    end_date = input("Enter end date (YYYY-MM-DD): ")
+    stock_symbol = StockSymbolEntry.get()
+    start_date = StartTimeEntry.get()
+    end_date = EndTimeEntry.get()
 
     stock_data = fetch_stock_data(stock_symbol, start_date, end_date)
 
